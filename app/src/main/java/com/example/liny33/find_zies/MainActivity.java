@@ -9,8 +9,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-public class UserLocationActivity extends FragmentActivity implements OnMapReadyCallback {
+/*
+    hiying Xu, Weila Xu, Youying Lin
+ */
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
