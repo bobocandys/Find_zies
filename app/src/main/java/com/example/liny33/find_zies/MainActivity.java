@@ -14,7 +14,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    private GoogleMap mMap; // m for member variable
+    private static final int ERROR_DIALOG_REQUEST = 1994;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,5 +45,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    public boolean servicesOK() {
+
+        return false;
     }
 }
