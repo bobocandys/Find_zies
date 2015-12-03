@@ -3,8 +3,12 @@ package com.example.liny33.find_zies;
 import android.app.Dialog;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -12,6 +16,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,52 +32,54 @@ import java.util.List;
 /*
     Shiying Xu, Weila Xu, Youying Lin
  */
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
-
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     private GoogleMap mMap; // m for member variable
     private static final int ERROR_DIALOG_REQUEST = 9001;
+
+    private static final double CSE_LAT = 47.653475;
+    private static final double CSE_LNG = -122.303498;
+
+    private GoogleApiClient mLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_location);
-/*
+
         if (servicesOK()) {
             setContentView(R.layout.activity_user_location);
 
             if (initMap()) {
-                Toast.makeText(this, "Ready to map.", Toast.LENGTH_SHORT).show();
+                gotoLocation(CSE_LAT, CSE_LNG, 15);
+                LatLng cse = new LatLng(CSE_LAT, CSE_LNG);
+                mMap.addMarker(new MarkerOptions().position(cse).title("Paul G. Allen"));
+
+                mLocationClient = new GoogleApiClient.Builder(this)
+                        .addApi(LocationServices.API)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .build();
+
+                mLocationClient.connect();
+                //mMap.setMyLocationEnabled(true);
             } else {
                 Toast.makeText(this, "Map not connected", Toast.LENGTH_SHORT).show();
             }
-        } else {
-
-        }*/
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        }
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-        // Add a marker in Sydney and move the camera
-        LatLng cse = new LatLng(47.653475, -122.303498);
-        mMap.addMarker(new MarkerOptions().position(cse).title("Paul G. Allen"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(cse));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
+        return super.onOptionsItemSelected(item);
     }
 
     public boolean servicesOK() {
@@ -132,4 +140,36 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void showCurrentLocation(MenuItem item) {
+        Location currentLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mLocationClient);
+        if (currentLocation == null) {
+            Toast.makeText(this, "Couldn't connect!", Toast.LENGTH_SHORT).show();
+        } else {
+            LatLng latLng = new LatLng(
+                    currentLocation.getLatitude(),
+                    currentLocation.getLongitude()
+            );
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
+                    latLng, 15
+            );
+            mMap.animateCamera(update);
+        }
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Toast.makeText(this, "Ready to map.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }
