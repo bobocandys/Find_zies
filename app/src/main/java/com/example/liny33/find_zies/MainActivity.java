@@ -1,8 +1,12 @@
 package com.example.liny33.find_zies;
 
+import android.app.Dialog;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -15,12 +19,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap; // m for member variable
-    private static final int ERROR_DIALOG_REQUEST = 1994;
+    private static final int ERROR_DIALOG_REQUEST = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_location);
+/*
+        if (servicesOK()) {
+            setContentView(R.layout.activity_user_location);
+
+            if (initMap()) {
+                Toast.makeText(this, "Ready to map.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Map not connected", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+
+        }*/
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -42,13 +58,35 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng cse = new LatLng(47.653475, -122.303498);
+        mMap.addMarker(new MarkerOptions().position(cse).title("Marker in CSE"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(cse));
+
     }
 
     public boolean servicesOK() {
+        int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
+        if (isAvailable == ConnectionResult.SUCCESS) {
+            return true;
+        } else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, ERROR_DIALOG_REQUEST);
+            dialog.show();
+        } else {
+            Toast.makeText(this, "can't connect to mapping service.", Toast.LENGTH_SHORT).show();
+        }
 
         return false;
     }
+
+
+    private boolean initMap() {
+        if (mMap == null) {
+            SupportMapFragment mapFragment =
+                    (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mMap = mapFragment.getMap();
+        }
+        return (mMap != null);
+    }
+
 }
