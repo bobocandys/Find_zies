@@ -6,4 +6,9 @@
         android:title="@string/current_location"
         app:showAsAction="always"
         android:onClick="showCurrentLocation"/>
+
+    <item android:id="@+id/cseLocation"
+        android:title="@string/cse_location"
+        app:showAsAction="always"
+        android:onClick="showCSELocation" />
 </menu>

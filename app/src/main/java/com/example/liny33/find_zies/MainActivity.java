@@ -137,6 +137,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             double lat = add.getLatitude();
             double lng = add.getLongitude();
             gotoLocation(lat, lng, 15);
+
+            MarkerOptions options = new MarkerOptions()
+                    .title(locality)
+                    .position(new LatLng(lat, lng));
+            mMap.addMarker(options);
         }
     }
 
@@ -156,6 +161,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mMap.animateCamera(update);
         }
 
+    }
+
+    public void showCSELocation(MenuItem item) {
+        Location currentLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mLocationClient);
+
+        LatLng latLng = new LatLng(
+                CSE_LAT,
+                CSE_LNG
+        );
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
+                latLng, 15
+        );
+        mMap.animateCamera(update);
     }
 
     @Override
