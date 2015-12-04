@@ -11,4 +11,10 @@
         android:title="@string/cse_location"
         app:showAsAction="always"
         android:onClick="showCSELocation" />
+
+    <item android:id="@+id/findPlaces"
+        android:title="@string/find_places"
+        app:showAsAction="always"
+        android:onClick="showPlaces" />
+
 </menu>

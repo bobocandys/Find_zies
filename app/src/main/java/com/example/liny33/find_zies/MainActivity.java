@@ -15,9 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,9 +62,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         .addApi(LocationServices.API)
                         .addConnectionCallbacks(this)
                         .addOnConnectionFailedListener(this)
+                        .addApi(Places.GEO_DATA_API)
+                        .addApi(Places.PLACE_DETECTION_API)
                         .build();
 
                 mLocationClient.connect();
+
                 //mMap.setMyLocationEnabled(true);
             } else {
                 Toast.makeText(this, "Map not connected", Toast.LENGTH_SHORT).show();
@@ -146,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void showCurrentLocation(MenuItem item) {
+
         Location currentLocation = LocationServices.FusedLocationApi
                 .getLastLocation(mLocationClient);
         if (currentLocation == null) {
@@ -164,8 +172,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void showCSELocation(MenuItem item) {
-        Location currentLocation = LocationServices.FusedLocationApi
-                .getLastLocation(mLocationClient);
+        mMap.clear();
 
         LatLng latLng = new LatLng(
                 CSE_LAT,
@@ -174,7 +181,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
                 latLng, 15
         );
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Paul G. Allen"));
         mMap.animateCamera(update);
+
     }
 
     @Override
@@ -190,5 +199,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    public void showPlaces(MenuItem item) {
+        int PLACE_PICKER_REQUEST = 1;
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
 }

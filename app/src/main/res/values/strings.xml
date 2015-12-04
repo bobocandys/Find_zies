@@ -2,6 +2,7 @@
     <string name="app_name">Find-zies</string>
     <string name="title_activity_user_location">Find-zies</string>
     <string name="location_label">Location:</string>
-    <string name="current_location">Current Location</string>
+    <string name="current_location">Current</string>
     <string name="cse_location">CSE</string>
+    <string name="find_places">find</string>
 </resources>
