@@ -28,6 +28,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -204,7 +205,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void showPlaces(MenuItem item) {
         int PLACE_PICKER_REQUEST = 1;
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        LatLng latLng1 = new LatLng(CSE_LAT, CSE_LNG);
+        LatLng latLng2 = new LatLng(CSE_LAT + 3, CSE_LNG + 3);
 
+        builder.setLatLngBounds(new LatLngBounds(latLng1, latLng2));
         try {
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
