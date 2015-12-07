@@ -1,6 +1,7 @@
 package com.example.liny33.find_zies;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -203,18 +204,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void showPlaces(MenuItem item) {
-        int PLACE_PICKER_REQUEST = 1;
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        LatLng latLng1 = new LatLng(CSE_LAT - 0.05, CSE_LNG - 0.05);
-        LatLng latLng2 = new LatLng(CSE_LAT + 0.05, CSE_LNG + 0.05);
-
-        builder.setLatLngBounds(new LatLngBounds(latLng1, latLng2));
         try {
-            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+            int PLACE_PICKER_REQUEST = 1;
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            LatLng latLng1 = new LatLng(CSE_LAT - 0.05, CSE_LNG - 0.05);
+            LatLng latLng2 = new LatLng(CSE_LAT + 0.05, CSE_LNG + 0.05);
+
+            builder.setLatLngBounds(new LatLngBounds(latLng1, latLng2));
+            Intent intent = builder.build(this);
+            startActivityForResult(intent, PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
+            Toast.makeText(this, "Google Play Services is not available.",
+                    Toast.LENGTH_LONG)
+                    .show();
         }
     }
 }
