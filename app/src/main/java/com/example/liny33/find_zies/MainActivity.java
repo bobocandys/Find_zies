@@ -205,8 +205,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void showPlaces(MenuItem item) {
         int PLACE_PICKER_REQUEST = 1;
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        LatLng latLng1 = new LatLng(CSE_LAT, CSE_LNG);
-        LatLng latLng2 = new LatLng(CSE_LAT + 3, CSE_LNG + 3);
+        LatLng latLng1 = new LatLng(CSE_LAT - 0.05, CSE_LNG - 0.05);
+        LatLng latLng2 = new LatLng(CSE_LAT + 0.05, CSE_LNG + 0.05);
 
         builder.setLatLngBounds(new LatLngBounds(latLng1, latLng2));
         try {
