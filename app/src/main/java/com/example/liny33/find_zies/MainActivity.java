@@ -1,5 +1,6 @@
 package com.example.liny33.find_zies;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Address;
@@ -8,6 +9,7 @@ import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdate;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         GoogleApiClient.OnConnectionFailedListener {
     private GoogleMap mMap; // m for member variable
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    private static final int PLACE_PICKER_REQUEST = 1;
 
     private static final double CSE_LAT = 47.653475;
     private static final double CSE_LNG = -122.303498;
@@ -205,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public void showPlaces(MenuItem item) {
         try {
-            int PLACE_PICKER_REQUEST = 1;
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             LatLng latLng1 = new LatLng(CSE_LAT - 0.05, CSE_LNG - 0.05);
             LatLng latLng2 = new LatLng(CSE_LAT + 0.05, CSE_LNG + 0.05);
@@ -220,5 +223,64 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     Toast.LENGTH_LONG)
                     .show();
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // BEGIN_INCLUDE(activity_result)
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            // This result is from the PlacePicker dialog.
+
+            if (resultCode == Activity.RESULT_OK) {
+                /* User has picked a place, extract data.
+                   Data is extracted from the returned intent by retrieving a Place object from
+                   the PlacePicker.
+                 */
+                final Place place = PlacePicker.getPlace(data, this);
+
+                /* A Place object contains details about that place, such as its name, address
+                and phone number. Extract the name, address, phone number, place ID and place types.
+                 */
+                final CharSequence name = place.getName();
+                final CharSequence address = place.getAddress();
+                final CharSequence phone = place.getPhoneNumber();
+                final String placeId = place.getId();
+                String attribution = PlacePicker.getAttributions(data);
+                if(attribution == null){
+                    attribution = "";
+                }
+
+                // Put the picked place information to the textview and
+                // make it visible.
+                TextView pickedPlaceView = (TextView) findViewById(R.id.textView);
+                StringBuffer placeInfo = new StringBuffer();
+                placeInfo.append(name + "\n");
+                placeInfo.append(address + "\n");
+                placeInfo.append(phone + "\n");
+                placeInfo.append(placeId);
+                pickedPlaceView.setText(placeInfo);
+                pickedPlaceView.setVisibility(View.VISIBLE);
+
+                // Updates the picked place at the map.
+                LatLng latLng = place.getLatLng();
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
+                        latLng, 15
+                );
+                mMap.addMarker(new MarkerOptions().position(latLng).title("Picked place"));
+                mMap.animateCamera(update);
+                sendPlaceInfoToServer(placeInfo);
+
+            } else {
+                // User has not selected a place, hide the card.
+            }
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        // END_INCLUDE(activity_result)
+    }
+
+    private void sendPlaceInfoToServer(StringBuffer placeInfo) {
+        //TODO
     }
 }
