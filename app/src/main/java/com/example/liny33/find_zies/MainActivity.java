@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,13 +27,18 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /*
@@ -50,7 +53,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final double CSE_LAT = 47.653475;
     private static final double CSE_LNG = -122.303498;
 
+    private static final String SERVER_IP = "173.250.207.222";
+    private static final int SERVER_PORT = 1235;
+
+
     private GoogleApiClient mLocationClient;
+    private Socket socket;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (servicesOK()) {
             setContentView(R.layout.activity_user_location);
+            new Thread(new ClientThread()).start();
 
             if (initMap()) {
                 gotoLocation(CSE_LAT, CSE_LNG, 15);
@@ -187,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
                 latLng, 15
         );
+        mMap.clear();
         mMap.addMarker(new MarkerOptions().position(latLng).title("Paul G. Allen"));
         mMap.animateCamera(update);
 
@@ -266,6 +278,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
                         latLng, 15
                 );
+
+                mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(latLng).title("Picked place"));
                 mMap.animateCamera(update);
                 sendPlaceInfoToServer(placeInfo);
@@ -282,5 +296,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void sendPlaceInfoToServer(StringBuffer placeInfo) {
         //TODO
+        PrintWriter out = null;
+        try {
+            out = new PrintWriter(new BufferedWriter(
+            new OutputStreamWriter(socket.getOutputStream())),true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Picked place is: " + placeInfo);
+
+        out.println(placeInfo);
+
+    }
+
+    class ClientThread implements Runnable {
+
+        @Override
+        public void run() {
+
+            try {
+                InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+
+                socket = new Socket(serverAddr, SERVER_PORT);
+
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+        }
+
     }
 }
