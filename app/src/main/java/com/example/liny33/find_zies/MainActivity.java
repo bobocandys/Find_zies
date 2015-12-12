@@ -46,7 +46,6 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-    private GoogleMap mMap; // m for member variable
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private static final int PLACE_PICKER_REQUEST = 1;
 
@@ -58,8 +57,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     private GoogleApiClient mLocationClient;
+    private GoogleMap mMap; // m for member variable
     private Socket socket;
-
+    private MenuItem findMenuItem;
+    private String userName;
 
 
     @Override
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        findMenuItem = menu.getItem(menu.size() - 1);
         return true;
     }
 
@@ -219,6 +221,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    public void joinAsParticipant(MenuItem menuItem) {
+        findMenuItem.setEnabled(false);
+        StringBuffer userInfo;
+    }
+
     public void showPlaces(MenuItem item) {
         try {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -282,10 +289,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(latLng).title("Picked place"));
                 mMap.animateCamera(update);
-                sendPlaceInfoToServer(placeInfo);
+                sendToServer(placeInfo);
 
             } else {
-                // User has not selected a place, hide the card.
+                // User has not selected a place, hide thez card.
             }
 
         } else {
@@ -294,19 +301,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // END_INCLUDE(activity_result)
     }
 
-    private void sendPlaceInfoToServer(StringBuffer placeInfo) {
+    private void sendToServer(StringBuffer placeInfo) {
         //TODO
-        PrintWriter out = null;
         try {
-            out = new PrintWriter(new BufferedWriter(
+            PrintWriter out = new PrintWriter(new BufferedWriter(
             new OutputStreamWriter(socket.getOutputStream())),true);
-        } catch (IOException e) {
+            out.println(placeInfo);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("Picked place is: " + placeInfo);
+    }
 
-        out.println(placeInfo);
+    public void inputName(View view) {
+        TextView tv = (TextView) findViewById(R.id.editText1);
+        userName = tv.getText().toString();
+        updateUserName();
+    }
 
+    private void updateUserName() {
+        TextView tv = (TextView) findViewById(R.id.textView2);
+        tv.setText("Welcome " + userName + " !");
     }
 
     class ClientThread implements Runnable {

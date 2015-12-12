@@ -5,4 +5,7 @@
     <string name="current_location">Current</string>
     <string name="cse_location">CSE</string>
     <string name="find_places">find</string>
+    <string name="joinAsParticipant">Join</string>
+    <string name="userName">Name:</string>
+    <string name="nameEnter">Enter</string>
 </resources>
