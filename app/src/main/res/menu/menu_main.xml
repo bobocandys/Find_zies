@@ -14,9 +14,9 @@
         android:onClick="joinAsParticipant" />
 
     <item android:id="@+id/cseLocation"
-        android:title="@string/cse_location"
+        android:title="@string/notifyAll"
         app:showAsAction="always"
-        android:onClick="showCSELocation" />
+        android:onClick="notifyAll" />
 
     <item android:id="@+id/findPlaces"
         android:title="@string/find_places"

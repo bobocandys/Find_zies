@@ -8,4 +8,5 @@
     <string name="joinAsParticipant">Join</string>
     <string name="userName">Name:</string>
     <string name="nameEnter">Enter</string>
+    <string name="notifyAll">notify</string>
 </resources>

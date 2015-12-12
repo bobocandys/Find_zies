@@ -272,7 +272,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 // Put the picked place information to the textview and
                 // make it visible.
                 TextView pickedPlaceView = (TextView) findViewById(R.id.textView);
+                String intro = "Let's meet at:";
                 StringBuffer placeInfo = new StringBuffer();
+                placeInfo.append(intro + "\n");
                 placeInfo.append(name + "\n");
                 placeInfo.append(address + "\n");
                 placeInfo.append(phone + "\n");
@@ -322,6 +324,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void updateUserName() {
         TextView tv = (TextView) findViewById(R.id.textView2);
         tv.setText("Welcome " + userName + " !");
+    }
+
+    public void notifyAll(MenuItem item) {
+        Toast.makeText(this, "Notifying all users...", Toast.LENGTH_SHORT).show();
+        StringBuffer message = new StringBuffer("NotifyAll\n");
     }
 
     class ClientThread implements Runnable {
