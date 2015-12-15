@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final double CSE_LAT = 47.653475;
     private static final double CSE_LNG = -122.303498;
 
-    private static final String SERVER_IP = "108.179.173.106";
+    private static final String SERVER_IP = "173.250.179.117";
     private static final int SERVER_PORT = 1236;
 
     private GoogleApiClient mLocationClient;
@@ -434,6 +434,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 System.out.println("Processing in background...");
                 InputStream is = socket.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
+                System.out.println("Start reading...");
                 String str = br.readLine();
                 while(str != null){
                     sb.append(str);
@@ -475,6 +476,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 System.out.println("Client Processing in background...");
                 InputStream is = socket.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
+                System.out.println("Client Start reading...");
                 String str = br.readLine();
                 while(str != null){
                     sb.append(str);
