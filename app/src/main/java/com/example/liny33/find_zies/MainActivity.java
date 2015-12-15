@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -32,12 +33,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
 
@@ -52,15 +58,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final double CSE_LAT = 47.653475;
     private static final double CSE_LNG = -122.303498;
 
-    private static final String SERVER_IP = "173.250.207.222";
-    private static final int SERVER_PORT = 1235;
+    private static final String SERVER_IP = "108.179.173.106";
+    private static final int SERVER_PORT = 1236;
 
     private GoogleApiClient mLocationClient;
     private GoogleMap mMap; // m for member variable
     private Socket socket;
     private MenuItem findMenuItem;
+    private MenuItem notifyAllMenuItem;
     private String userName;
-    boolean isOrganizer;
+    private boolean isOrganizer;
 
 
     @Override
@@ -98,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         findMenuItem = menu.getItem(menu.size() - 1);
+        notifyAllMenuItem = menu.getItem(menu.size() - 2);
         return true;
     }
 
@@ -223,13 +231,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private StringBuffer getUserInformation() {
         StringBuffer res = new StringBuffer();
-        res.append(isOrganizer + "\n");
         res.append(userName + "\n");
+        res.append(isOrganizer + "\n");
         return res;
     }
 
     public void showPlaces(MenuItem item) {
         try {
+            isOrganizer = true;
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             LatLng latLng1 = new LatLng(CSE_LAT - 0.05, CSE_LNG - 0.05);
             LatLng latLng2 = new LatLng(CSE_LAT + 0.05, CSE_LNG + 0.05);
@@ -274,14 +283,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 // Put the picked place information to the textview and
                 // make it visible.
                 TextView pickedPlaceView = (TextView) findViewById(R.id.textView);
-                String intro = "Let's meet at:";
+                String intro = "Let's meet at:\n";
                 StringBuffer placeInfo = new StringBuffer();
-                placeInfo.append(intro + "\n");
+                //placeInfo.append(intro + "\n");
                 placeInfo.append(name + "\n");
                 placeInfo.append(address + "\n");
                 placeInfo.append(phone + "\n");
-                placeInfo.append(placeId);
-                pickedPlaceView.setText(placeInfo);
+                placeInfo.append(placeId + "\n");
+                pickedPlaceView.setText(intro + placeInfo);
                 pickedPlaceView.setVisibility(View.VISIBLE);
 
                 // Updates the picked place at the map.
@@ -293,7 +302,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(latLng).title("Picked place"));
                 mMap.animateCamera(update);
-                sendToServer(placeInfo);
+
+                StringBuffer msg = getUserInformation();
+                msg.append(placeInfo);
+                sendToServer(msg);
+                System.out.println("Message sent is:\n" + msg);
 
             } else {
                 // User has not selected a place, hide the card.
@@ -308,13 +321,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void sendToServer(StringBuffer placeInfo) {
         //TODO
         try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(
-            new OutputStreamWriter(socket.getOutputStream())),true);
+            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true);
             out.println(placeInfo);
+            System.out.println("Message sent to Server is " + placeInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Picked place is: " + placeInfo);
     }
 
     public void inputName(View view) {
@@ -332,22 +344,58 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Toast.makeText(this, "Notifying all users...", Toast.LENGTH_SHORT).show();
         StringBuffer message = new StringBuffer("NotifyAll\n");
         sendToServer(message);
-        waitForServer();
+        System.out.println("ready to wait for server");
+        new ServiceTask().execute();
     }
 
     public void joinAsParticipant(MenuItem menuItem) {
         isOrganizer = false;
         findMenuItem.setEnabled(false);
+        notifyAllMenuItem.setEnabled(false);
         if (userName != null) {
             StringBuffer userInfo = getUserInformation();
             sendToServer(userInfo);
-            waitForServer();
+            new ClientTask().execute();
         }
     }
 
-    private void waitForServer() {
+//    private void waitForServer() {
         // Set a timer
-    }
+//        if (isOrganizer) {
+//            System.out.println("is organizer." + isOrganizer);
+//            try {
+//               // while (true) {
+//                    BufferedReader input;
+//                    System.out.print("here");
+//                    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                    System.out.print("there");
+//                    char[] buffer = new char[1024];
+//                    int read = input.read(buffer);
+//                    while (read > 0) {
+//                        System.out.print(buffer);
+//                        read = input.read(buffer);
+//                    }
+//                //    break;
+//               // }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            System.out.println("is Participant.");
+//            try {
+//                BufferedReader input;
+//                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                char[] buffer = new char[1024];
+//                int read = input.read(buffer);
+//                while(read > 0) {
+//                    System.out.print(buffer);
+//                    read = input.read(buffer);
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     class ClientThread implements Runnable {
 
@@ -358,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
 
                 socket = new Socket(serverAddr, SERVER_PORT);
+                System.out.println("Socket is ready");
 
             } catch (UnknownHostException e1) {
                 e1.printStackTrace();
@@ -367,5 +416,87 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         }
 
+    }
+
+    public class ServiceTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            BufferedReader br = null;
+            StringBuffer sb = new StringBuffer("");
+
+            try {
+                System.out.println("Processing in background...");
+                InputStream is = socket.getInputStream();
+                br = new BufferedReader(new InputStreamReader(is));
+                String str = br.readLine();
+                while(str != null){
+                    sb.append(str);
+                    sb.append("\n");
+                    str = br.readLine();
+                }
+                System.out.println("Input message \n" + sb.toString());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error 3");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return sb.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            System.out.println(result);
+            TextView tv = (TextView) findViewById(R.id.textView2);
+            tv.append("\n" + result);
+        }
+    }
+
+    public class ClientTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            BufferedReader br = null;
+            StringBuffer sb = new StringBuffer("");
+
+            try {
+                System.out.println("Client Processing in background...");
+                InputStream is = socket.getInputStream();
+                br = new BufferedReader(new InputStreamReader(is));
+                String str = br.readLine();
+                while(str != null){
+                    sb.append(str);
+                    sb.append("\n");
+                    str = br.readLine();
+                }
+                System.out.println("Input message \n" + sb.toString());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error 3");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return sb.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            System.out.println(result);
+            TextView tv = (TextView) findViewById(R.id.textView2);
+            tv.append("\n" + result);
+        }
     }
 }
