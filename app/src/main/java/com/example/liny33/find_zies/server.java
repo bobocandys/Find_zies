@@ -3,24 +3,15 @@ package com.example.liny33.find_zies;
 /**
  * Created by sine_XD on 12/11/15.
  */
-import com.google.android.gms.plus.model.people.Person;
-
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/**
- * This is a simple server application. This server receive a string message
- * from the Android mobile phone and show it on the console.
- * Author by Lak J Comspace
- */
 public class server {
 
     private static ServerSocket serverSocket;
