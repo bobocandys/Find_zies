@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -48,32 +49,40 @@ public class server {
             mini.start();
             System.out.println("New thread.");
 
+
         }
 //        serverSocket.close();
+
     }
 
     private static void notifyEachOther() throws IOException {
 //        for (PersonInfo organizer: organizers) {
             OutputStream os = organizers.get(0).getClientSocket().getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(os);
-            BufferedWriter bw = new BufferedWriter(osw);
-            bw.write("Hi we are cute organizers.");
+//            OutputStreamWriter osw = new OutputStreamWriter(os);
+            PrintWriter bw = new PrintWriter(os, true);
+            bw.println("Hi we are cute organizers.");
             for (PersonInfo participant : participants) {
-                bw.write(participant.getUsername());
+                bw.println(participant.getUsername());
                 System.out.println("Message sent to the orgainizer is " + participant.getUsername());
             }
-            bw.flush();
+//            bw.flush();
 //        }
         String address = organizers.get(0).getAddress();
         System.out.println("Participant size: " + participants.size());
+        PrintWriter bw2 = null;
         for (PersonInfo participant : participants) {
-            OutputStream os2 = participant.getClientSocket().getOutputStream();
-            OutputStreamWriter osw2 = new OutputStreamWriter(os2);
-            BufferedWriter bw2 = new BufferedWriter(osw2);
-            bw2.write(address);
+            System.out.println(participant.getClientSocket());
+//            OutputStream os2 = participant.getClientSocket().getOutputStream();
+
+//            OutputStreamWriter osw2 = new OutputStreamWriter(participant.getOs());
+
+            bw2 = new PrintWriter(participant.getOs(), true);
+            bw2.println(address);
             System.out.println("Message sent to the participant is " + address);
-            bw2.flush();
+
         }
+
+//        bw2.flush();
     }
 
     private static class MiniServer extends Thread {
@@ -101,8 +110,9 @@ public class server {
                     System.out.println("Address is: " + address);
                 } else {
 //                        boolean isGoing = Boolean.parseBoolean(bufferedReader.readLine());
+                    OutputStream os2 = clientSocket.getOutputStream();
                     System.out.println("If I am a organizer: " + isOrganizer);
-                    PersonInfo p = new PersonInfo(username, isOrganizer, true, clientSocket);
+                    PersonInfo p = new PersonInfo(username, isOrganizer, true, clientSocket, os2);
                     participants.add(p);
                 }
 
@@ -114,7 +124,7 @@ public class server {
                             System.out.println("Notifying");
                             notifyEachOther();
                             organizers.clear();
-
+                            participants.clear();
                             break;
                         }
                     }

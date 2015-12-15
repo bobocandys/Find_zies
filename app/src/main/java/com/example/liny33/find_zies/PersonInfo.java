@@ -4,6 +4,7 @@ package com.example.liny33.find_zies;
  * Created by sine_XD on 12/13/15.
  */
 
+import java.io.OutputStream;
 import java.net.Socket;
 
 /**
@@ -15,12 +16,14 @@ public class PersonInfo {
     private String address;
     private boolean isGoing;
     private Socket clientSocket;
+    private OutputStream os;
 
-    public PersonInfo (String username, boolean isOrganizer, boolean isGoing, Socket clientSocket) {
+    public PersonInfo (String username, boolean isOrganizer, boolean isGoing, Socket clientSocket, OutputStream os) {
         this.username = username;
         this.isOrganizer = isOrganizer;
         this.isGoing = isGoing;
         this.clientSocket = clientSocket;
+        this.os = os;
     }
 
     public PersonInfo (String username, boolean isOrganizer, String address, Socket clientSocket) {
@@ -28,6 +31,10 @@ public class PersonInfo {
         this.isOrganizer = isOrganizer;
         this.address = address;
         this.clientSocket = clientSocket;
+    }
+
+    public OutputStream getOs() {
+        return os;
     }
 
     public String getUsername() {
