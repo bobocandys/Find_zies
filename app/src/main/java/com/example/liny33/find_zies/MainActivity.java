@@ -55,12 +55,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final String SERVER_IP = "173.250.207.222";
     private static final int SERVER_PORT = 1235;
 
-
     private GoogleApiClient mLocationClient;
     private GoogleMap mMap; // m for member variable
     private Socket socket;
     private MenuItem findMenuItem;
     private String userName;
+    boolean isOrganizer;
 
 
     @Override
@@ -221,9 +221,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    public void joinAsParticipant(MenuItem menuItem) {
-        findMenuItem.setEnabled(false);
-        StringBuffer userInfo;
+    private StringBuffer getUserInformation() {
+        StringBuffer res = new StringBuffer();
+        res.append(isOrganizer + "\n");
+        res.append(userName + "\n");
+        return res;
     }
 
     public void showPlaces(MenuItem item) {
@@ -294,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 sendToServer(placeInfo);
 
             } else {
-                // User has not selected a place, hide thez card.
+                // User has not selected a place, hide the card.
             }
 
         } else {
@@ -329,6 +331,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void notifyAll(MenuItem item) {
         Toast.makeText(this, "Notifying all users...", Toast.LENGTH_SHORT).show();
         StringBuffer message = new StringBuffer("NotifyAll\n");
+        sendToServer(message);
+        waitForServer();
+    }
+
+    public void joinAsParticipant(MenuItem menuItem) {
+        isOrganizer = false;
+        findMenuItem.setEnabled(false);
+        if (userName != null) {
+            StringBuffer userInfo = getUserInformation();
+            sendToServer(userInfo);
+            waitForServer();
+        }
+    }
+
+    private void waitForServer() {
+        // Set a timer
     }
 
     class ClientThread implements Runnable {
