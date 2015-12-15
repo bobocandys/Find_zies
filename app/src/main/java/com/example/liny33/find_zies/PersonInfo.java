@@ -18,6 +18,18 @@ public class PersonInfo {
     private Socket clientSocket;
     private OutputStream os;
 
+    public PersonInfo (String username, boolean isOrganizer, String address) {
+        this.username = username;
+        this.isOrganizer = isOrganizer;
+        this.address = address;
+    }
+
+    public PersonInfo (String username, boolean isOrganizer) {
+        this.username = username;
+        this.isOrganizer = isOrganizer;
+
+    }
+
     public PersonInfo (String username, boolean isOrganizer, boolean isGoing, Socket clientSocket, OutputStream os) {
         this.username = username;
         this.isOrganizer = isOrganizer;
