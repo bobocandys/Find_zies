@@ -36,7 +36,7 @@
 
         <activity
             android:name=".Bridge"
-            android:label="@string/title_activity_bridge"
+            android:label="Find-zies"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,7 +47,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_user_location">
+            android:label="Find-zies">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

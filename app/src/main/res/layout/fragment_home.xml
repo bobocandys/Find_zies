@@ -5,7 +5,7 @@
     tools:context=".home"
     android:clickable="true"
     android:contextClickable="false"
-    android:id="@android:id/home">
+    android:background="@drawable/gezi">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -55,5 +55,15 @@
         android:textStyle="bold"
         android:textColor="#4d4d4d"
         android:textSize="24sp"/>
+
+    <TextView
+        android:layout_width="133dp"
+        android:layout_height="80dp"
+        android:text="Find-zies"
+        android:id="@+id/find"
+        android:textStyle="bold"
+        android:textColor="#663300"
+        android:textSize="30sp"
+        android:layout_gravity="center_horizontal|top" />
 
 </FrameLayout>
