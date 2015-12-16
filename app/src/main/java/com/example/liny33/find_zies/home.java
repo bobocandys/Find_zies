@@ -36,14 +36,14 @@ public class home extends Fragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(getActivity(), MainActivity.class);
+                intent = new Intent(getActivity(), OrganizerActivity.class);
                 startActivity(intent);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(getActivity(), MainActivity.class);
+                intent = new Intent(getActivity(), ParticipantActivity.class);
                 startActivity(intent);
             }
         });
