@@ -1,0 +1,55 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.liny33.find_zies.home"
+    android:clickable="true"
+    android:contextClickable="false">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageButton
+        android:layout_width="222dp"
+        android:layout_height="222dp"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:id="@+id/imageButton1"
+
+        android:background="@null"
+        android:src="@drawable/cat_burned"
+        android:layout_gravity="left|center_vertical"
+        android:adjustViewBounds="true"
+        android:clickable="true"
+        android:contextClickable="false" />
+
+    <ImageButton
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:id="@+id/imageButton2"
+
+        android:background="@null"
+        android:src="@drawable/dog_burned"
+        android:layout_gravity="right|center_vertical"
+        android:clickable="true"/>
+
+    <TextView
+        android:layout_width="218dp"
+        android:layout_height="182dp"
+        android:text="Organizer"
+        android:id="@+id/org"
+        android:layout_gravity="center_horizontal|bottom"
+        android:textStyle="bold"
+        android:textColor="#4d4d4d"/>
+
+    <TextView
+        android:layout_width="131dp"
+        android:layout_height="183dp"
+        android:text="Participant"
+        android:id="@+id/part"
+        android:layout_gravity="right|bottom"
+        android:textStyle="bold"
+        android:textColor="#ac743a"/>
+
+</FrameLayout>
