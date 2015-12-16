@@ -3,7 +3,9 @@ package com.example.liny33.find_zies;
 import android.os.Bundle;
 import android.app.Activity;
 
-
+/*
+Lala
+ */
 public class Bridge extends Activity {
 
     @Override
