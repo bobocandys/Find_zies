@@ -3,7 +3,6 @@ package com.example.liny33.find_zies;
 /**
  * Created by sine_XD on 12/11/15.
  */
-import com.google.android.gms.plus.model.people.Person;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,11 +15,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/**
- * This is a simple server application. This server receive a string message
- * from the Android mobile phone and show it on the console.
- * Author by Lak J Comspace
- */
+
 public class server {
 
     private static ServerSocket serverSocket;
@@ -30,6 +25,7 @@ public class server {
 //    private static String message;
     private static ArrayList<PersonInfo> participants;
     private static ArrayList<PersonInfo> organizers;
+//    private static boolean notifyIt;
 
     public static void main(String[] args) throws IOException{
         participants = new ArrayList<PersonInfo>();
@@ -49,8 +45,15 @@ public class server {
             mini.start();
             System.out.println("New thread.");
 
-
+//            if (notifyIt) {
+//                System.out.println("Notifying");
+//                notifyEachOther();
+//                organizers.clear();
+//                participants.clear();
+//                break;
+//            }
         }
+
 //        serverSocket.close();
 
     }
@@ -125,9 +128,14 @@ public class server {
                             notifyEachOther();
                             organizers.clear();
                             participants.clear();
+                            System.out.println("Before changing boolean");
+//                            notifyIt = true;
                             break;
                         }
                     }
+                } else {
+                    String test = bufferedReader.readLine();
+                    System.out.println("The participant received data from organizer: " + test);
                 }
                 inputStreamReader.close();
             } catch (IOException ex) {

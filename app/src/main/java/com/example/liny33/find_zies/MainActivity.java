@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final double CSE_LAT = 47.653475;
     private static final double CSE_LNG = -122.303498;
 
-    private static final String SERVER_IP = "173.250.207.222";
+    private static final String SERVER_IP = "69.91.145.202";
     private static final int SERVER_PORT = 1235;
 
 
