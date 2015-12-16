@@ -21,6 +21,8 @@ public class server {
 //    private static String message;
     private static ArrayList<PersonInfo> participants;
     private static ArrayList<PersonInfo> organizers;
+    private static boolean notifyAll = false;
+
 
     public static void main(String[] args) throws IOException{
         participants = new ArrayList<PersonInfo>();
@@ -51,30 +53,38 @@ public class server {
             OutputStream os = organizers.get(0).getClientSocket().getOutputStream();
 //            OutputStreamWriter osw = new OutputStreamWriter(os);
             PrintWriter bw = new PrintWriter(os, true);
-            bw.println("Hi we are cute organizers.");
+            bw.println(participants.size() + " participant coming." );
+            bw.println("These are the participants coming to your event: ");
             for (PersonInfo participant : participants) {
                 bw.println(participant.getUsername());
                 System.out.println("Message sent to the orgainizer is " + participant.getUsername());
             }
-//            bw.flush();
+            bw.close();
 //        }
-        String address = organizers.get(0).getAddress();
-        System.out.println("Participant size: " + participants.size());
-        PrintWriter bw2 = null;
-        for (PersonInfo participant : participants) {
-            System.out.println(participant.getClientSocket());
-//            OutputStream os2 = participant.getClientSocket().getOutputStream();
-
-//            OutputStreamWriter osw2 = new OutputStreamWriter(participant.getOs());
-
-            bw2 = new PrintWriter(participant.getOs(), true);
-            bw2.println(address);
-            System.out.println("Message sent to the participant is " + address);
-
-        }
-
+//        String address = organizers.get(0).getAddress();
+////        PrintWriter bw2 = null;
+////        for (PersonInfo participant : participants) {
+//            System.out.println(participants.get(0).getClientSocket());
+////            OutputStream os2 = participant.getClientSocket().getOutputStream();
+//
+////            OutputStreamWriter osw2 = new OutputStreamWriter(participant.getOs());
+//
+//            PrintWriter bw2 = new PrintWriter(participants.get(0).getOs(), true);
+//            bw2.println(address);
+////            bw2.flush();
+//            System.out.println("Message sent to the participant is " + address);
+//
+////        }
+//        bw2.flush();
+//        bw2.close();
+//        closeAllClientSockets();
 //        bw2.flush();
     }
+
+//    private static void closeAllClientSockets() throws IOException {
+//        organizers.get(0).getClientSocket().close();
+//        participants.get(0).getClientSocket().close();
+//    }
 
     private static class MiniServer extends Thread {
         private Socket clientSocket = null;
@@ -113,12 +123,30 @@ public class server {
                         System.out.println("Ready to notify");
                         if (notify.equalsIgnoreCase("notifyall")) {
                             System.out.println("Notifying");
+                            notifyAll = true;
                             notifyEachOther();
                             organizers.clear();
                             participants.clear();
+
                             break;
                         }
                     }
+                } else {
+
+                    while (!notifyAll) {
+
+                    }
+                    String address = organizers.get(0).getAddress();
+                    System.out.println(participants.get(0).getClientSocket());
+
+                    PrintWriter bw2 = new PrintWriter(participants.get(0).getOs(), true);
+                    bw2.println(address);
+                    System.out.println("Message sent to the participant is " + address);
+
+                    bw2.flush();
+                    bw2.close();
+                    String test = bufferedReader.readLine();
+//                    System.out.println("The participant received data from organizer: " + test);
                 }
                 inputStreamReader.close();
             } catch (IOException ex) {
