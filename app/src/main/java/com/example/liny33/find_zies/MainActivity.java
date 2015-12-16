@@ -51,22 +51,24 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-    private static final int ERROR_DIALOG_REQUEST = 9001;
-    private static final int PLACE_PICKER_REQUEST = 1;
+    protected static final int ERROR_DIALOG_REQUEST = 9001;
+    protected static final int PLACE_PICKER_REQUEST = 1;
 
-    private static final double CSE_LAT = 47.653475;
-    private static final double CSE_LNG = -122.303498;
+    protected static final double CSE_LAT = 47.653475;
+    protected static final double CSE_LNG = -122.303498;
 
-    private static final String SERVER_IP = "108.179.173.106";
-    private static final int SERVER_PORT = 1236;
+    protected static final String SERVER_IP = "108.179.191.213";
+    protected static final int SERVER_PORT = 1236;
 
-    private GoogleApiClient mLocationClient;
-    private GoogleMap mMap; // m for member variable
-    private Socket socket;
-    private MenuItem findMenuItem;
-    private MenuItem notifyAllMenuItem;
-    private String userName;
-    private boolean isOrganizer;
+    protected GoogleApiClient mLocationClient;
+    protected GoogleMap mMap; // m for member variable
+    protected Socket socket;
+    protected MenuItem findMenuItem;
+    protected MenuItem notifyAllMenuItem;
+    protected MenuItem joinMenuItem;
+    protected String userName;
+    protected boolean isOrganizer;
+
 
 
     @Override
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         getMenuInflater().inflate(R.menu.menu_main, menu);
         findMenuItem = menu.getItem(menu.size() - 1);
         notifyAllMenuItem = menu.getItem(menu.size() - 2);
+        joinMenuItem = menu.getItem(menu.size() - 3);
         return true;
     }
 
@@ -361,46 +364,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-//    private void waitForServer() {
-        // Set a timer
-//        if (isOrganizer) {
-//            System.out.println("is organizer." + isOrganizer);
-//            try {
-//               // while (true) {
-//                    BufferedReader input;
-//                    System.out.print("here");
-//                    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                    System.out.print("there");
-//                    char[] buffer = new char[1024];
-//                    int read = input.read(buffer);
-//                    while (read > 0) {
-//                        System.out.print(buffer);
-//                        read = input.read(buffer);
-//                    }
-//                //    break;
-//               // }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            System.out.println("is Participant.");
-//            try {
-//                BufferedReader input;
-//                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                char[] buffer = new char[1024];
-//                int read = input.read(buffer);
-//                while(read > 0) {
-//                    System.out.print(buffer);
-//                    read = input.read(buffer);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
     class ClientThread implements Runnable {
-
         @Override
         public void run() {
 
@@ -436,6 +400,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 System.out.println("Processing in background...");
                 InputStream is = socket.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
+                System.out.println("Start reading...");
                 String str = br.readLine();
                 while(str != null){
                     sb.append(str);
@@ -477,6 +442,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 System.out.println("Client Processing in background...");
                 InputStream is = socket.getInputStream();
                 br = new BufferedReader(new InputStreamReader(is));
+                System.out.println("Client Start reading...");
                 String str = br.readLine();
                 while(str != null){
                     sb.append(str);
