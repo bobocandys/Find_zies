@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class server {
 
@@ -22,6 +24,8 @@ public class server {
     private static ArrayList<PersonInfo> participants;
     private static ArrayList<PersonInfo> organizers;
     private static boolean notifyAll = false;
+    private static BlockingQueue bq = new ArrayBlockingQueue(1000);
+
 
 
     public static void main(String[] args) throws IOException{
@@ -88,11 +92,17 @@ public class server {
 
     private static class MiniServer extends Thread {
         private Socket clientSocket = null;
+//        private BlockingQueue bq = null;
 
         public MiniServer(Socket socket) {
             super("MiniServer");
             this.clientSocket = socket;
+//             this.setBlockingQueue(bq);
         }
+
+//        private void setBlockingQueue(BlockingQueue bq) {
+//            this.bq = bq;
+//        }
 
         public void run(){
             try {
@@ -109,6 +119,11 @@ public class server {
                     organizers.add(p);
                     System.out.println("If I am a organizer: " + isOrganizer);
                     System.out.println("Address is: " + address);
+                    try {
+                        bq.put(address);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 } else {
 //                        boolean isGoing = Boolean.parseBoolean(bufferedReader.readLine());
                     OutputStream os2 = clientSocket.getOutputStream();
@@ -132,14 +147,16 @@ public class server {
                         }
                     }
                 } else {
-
+                    int i = 0;
                     while (!notifyAll) {
-
+                        System.out.println(i + " time");
+//                        i++;
                     }
                     String address = organizers.get(0).getAddress();
                     System.out.println(participants.get(0).getClientSocket());
 
                     PrintWriter bw2 = new PrintWriter(participants.get(0).getOs(), true);
+                    bw2.flush();
                     bw2.println(address);
                     System.out.println("Message sent to the participant is " + address);
 
