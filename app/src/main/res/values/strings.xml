@@ -9,4 +9,6 @@
     <string name="userName">Name:</string>
     <string name="nameEnter">Enter</string>
     <string name="notifyAll">notify</string>
+    <string name="title_activity_bridge">Bridge</string>
+    <string name="action_settings">Settings</string>
 </resources>
