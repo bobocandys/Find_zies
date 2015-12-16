@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (userName != null) {
             StringBuffer userInfo = getUserInformation();
             sendToServer(userInfo);
-            new ClientTask().execute();
+            new ServiceTask().execute();
         }
     }
 
@@ -422,49 +422,49 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         protected void onPostExecute(String result) {
             System.out.println(result);
             TextView tv = (TextView) findViewById(R.id.textView2);
-            tv.append("\n" + result);
+            tv.append("\n\n" + result);
         }
     }
 
-    public class ClientTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            BufferedReader br = null;
-            StringBuffer sb = new StringBuffer("");
-
-            try {
-                System.out.println("Client Processing in background...");
-                InputStream is = socket.getInputStream();
-                br = new BufferedReader(new InputStreamReader(is));
-                System.out.println("Client Start reading...");
-                String str = br.readLine();
-                while(str != null){
-                    sb.append(str);
-                    sb.append("\n");
-                    str = br.readLine();
-                }
-                System.out.println("Input message \n" + sb.toString());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("Error 3");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return sb.toString();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            System.out.println(result);
-            TextView tv = (TextView) findViewById(R.id.textView2);
-            tv.append("\n" + result);
-        }
-    }
+//    public class ClientTask extends AsyncTask<String, Void, String> {
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//
+//            BufferedReader br = null;
+//            StringBuffer sb = new StringBuffer("");
+//
+//            try {
+//                System.out.println("Client Processing in background...");
+//                InputStream is = socket.getInputStream();
+//                br = new BufferedReader(new InputStreamReader(is));
+//                System.out.println("Client Start reading...");
+//                String str = br.readLine();
+//                while(str != null){
+//                    sb.append(str);
+//                    sb.append("\n");
+//                    str = br.readLine();
+//                }
+//                System.out.println("Input message \n" + sb.toString());
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                System.out.println("Error 3");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return sb.toString();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            System.out.println(result);
+//            TextView tv = (TextView) findViewById(R.id.textView2);
+//            tv.append("\n\n" + result);
+//        }
+//    }
 }

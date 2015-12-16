@@ -1,6 +1,7 @@
 package com.example.liny33.find_zies;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -16,8 +17,15 @@ public class ParticipantActivity extends MainActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         findMenuItem.setEnabled(false);
         notifyAllMenuItem.setEnabled(false);
-
+        return true;
     }
 }
